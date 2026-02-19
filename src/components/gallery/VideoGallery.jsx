@@ -50,31 +50,40 @@ const VideoGallery = () => {
 
   return (
     <div id="VideoGallery" className="mx-[10%]">
-      <Slider {...settings}>
-        {videos.map((item, idx) => {
-          const url = typeof item === "string" ? item : item.url
-          const base = url.split("/").pop() || ""
-          const name = typeof item === "string" ? base : (item.name || base)
-          return (
-          <div key={idx} className="video-card">
-            <video
-              src={url}
-              controls
-              controlsList="nodownload noplaybackrate noremoteplayback"
-              disablePictureInPicture
-              playsInline
-              className="rounded-lg w-full"
-              style={{ height: "clamp(180px, 32vh, 280px)" }}
-              onError={(e) => {
-                e.currentTarget.parentElement.style.display = "none"
-              }}
-              onContextMenu={(e) => e.preventDefault()}
-            />
-            <div className="text-white opacity-80 text-sm mt-2">{name}</div>
+      {videos.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-state-card">
+            <div className="empty-title">Video belum ditambahkan</div>
+            <div className="empty-sub">Konten video akan muncul di sini jika tersedia.</div>
           </div>
-          )
-        })}
-      </Slider>
+        </div>
+      ) : (
+        <Slider {...settings}>
+          {videos.map((item, idx) => {
+            const url = typeof item === "string" ? item : item.url
+            const base = url.split("/").pop() || ""
+            const name = typeof item === "string" ? base : (item.name || base)
+            return (
+            <div key={idx} className="video-card">
+              <video
+                src={url}
+                controls
+                controlsList="nodownload noplaybackrate noremoteplayback"
+                disablePictureInPicture
+                playsInline
+                className="rounded-lg w-full"
+                style={{ height: "clamp(180px, 32vh, 280px)" }}
+                onError={(e) => {
+                  e.currentTarget.parentElement.style.display = "none"
+                }}
+                onContextMenu={(e) => e.preventDefault()}
+              />
+              <div className="text-white opacity-80 text-sm mt-2">{name}</div>
+            </div>
+            )
+          })}
+        </Slider>
+      )}
     </div>
   )
 }

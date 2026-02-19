@@ -20,8 +20,12 @@ export const LOCAL_PHOTOS = [
   { url: "/21.jpg", name: "Foto 21" },
 ]
 
-
 export const LOCAL_VIDEOS = [
-  { url: "VID-20260112-wa0800.mp4", name: "video1"},
-  // kosongkan untuk menghindari aset video besar di build; gunakan Firebase
-] 
+  { url: "/0113.mp4", name: "0113" },
+  { url: "/13.mp4", name: "13" },
+  { url: "/VID-20260112-WA0172.mp4", name: "Video 0172" },
+  { url: "/VID-20260112-WA0205.mp4", name: "Video 0205" },
+  { url: "/VID-20260112-WA0800.mp4", name: "Video 0800" },
+  { url: "/VID-20260112-WA0803.mp4", name: "Video 0803" },
+  { url: "/VID-20260112-WA0805.mp4", name: "Video 0805" }
+]
