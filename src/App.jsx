@@ -5,6 +5,8 @@ import FullWidthTabs from "./Pages/Tabs"
 import Footer from "./Pages/Footer"
 import AOS from "aos"
 import "aos/dist/aos.css"
+import { db } from "./firebase"
+import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore"
 
 function TextAnonimWidget() {
 	const asset = (p) => {
@@ -23,15 +25,41 @@ function TextAnonimWidget() {
 	const [text, setText] = useState("")
 	const boxRef = useRef(null)
 	useEffect(() => {
-		try {
-			const capped = Array.isArray(messages) ? messages.slice(-200) : []
-			localStorage.setItem("anon_msgs", JSON.stringify(capped))
-		} catch (e) { void e }
+		if (db) {
+			const q = query(collection(db, "anon_msgs"), orderBy("createdAt", "asc"))
+			const unsub = onSnapshot(q, (snap) => {
+				const list = snap.docs.map((d) => d.data()?.text).filter(Boolean)
+				setMessages(list)
+				setTimeout(() => {
+					const el = boxRef.current
+					if (el) el.scrollTop = el.scrollHeight
+				}, 0)
+		 })
+			return () => unsub()
+		} else {
+			try {
+				const raw = localStorage.getItem("anon_msgs")
+				const list = raw ? JSON.parse(raw) : []
+				setMessages(Array.isArray(list) ? list.map(m => m?.text || m).filter(Boolean) : [])
+			} catch { /* ignore */ }
+		}
+	}, [])
+	useEffect(() => {
+		if (!db) {
+			try {
+				const capped = Array.isArray(messages) ? messages.slice(-200) : []
+				localStorage.setItem("anon_msgs", JSON.stringify(capped.map(t => ({ text: t }))))
+			} catch (e) { void e }
+		}
 	}, [messages])
 	const send = () => {
 		const v = (text || "").trim()
 		if (!v) return
-		setMessages((prev) => [...prev, { text: v, ts: Date.now() }])
+		if (db) {
+			addDoc(collection(db, "anon_msgs"), { text: v, createdAt: serverTimestamp() }).catch(() => {})
+		} else {
+			setMessages((prev) => [...prev, v])
+		}
 		setText("")
 		setTimeout(() => {
 			const el = boxRef.current
