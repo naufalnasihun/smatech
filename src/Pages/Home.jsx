@@ -254,14 +254,14 @@ const Home = () => {
 				<div
 					className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-white/10 backdrop-blur-lg text-xs md:text-sm hover:bg-white/15 transition"
 				>
-					<span className="opacity-80">Welcome to</span>
-					<span className="font-semibold">smatech.in_k</span>
+					<span className="opacity-80"></span>
+					<span className="font-semibold">Informatics Engineering</span>
 				</div>
 				<h1 className="mt-4 text-3xl md:text-5xl lg:text-6xl font-extrabold glow-soft">
-					Smart Technology Information Karyawan
+					Smart Technology Informatics Karyawan
 				</h1>
 				<div className="opacity-80 mt-2 text-sm md:text-base">
-					UNIVERSITAS HASYIM ASY&apos;ARI — UNHASY Tebuireng Jombang.
+					Wroker Class — UNHASY Tebuireng Jombang.
 				</div>
 
 				<div className="mt-6">
@@ -385,11 +385,19 @@ const Home = () => {
 					>
 						<div className="image-card">
 							<img
+								src={asset("kebersamaan.jpg")}
+								alt="Kebersamaan Kelas"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
+							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
+						</div>
+						<div className="image-card">
+							<img
 								src={asset("rujakan.jpg")}
 								alt="Rujakan Ziarah"
 								onError={(e) => { e.currentTarget.src = (seasonal.image || asset("kebersamaan.jpg")) }}
 							/>
-							<div className="image-caption">Kebersamaan kelas — UNHASY Tebuireng Jombang</div>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
 						</div>
 						<div className="image-card">
 							<img
@@ -397,7 +405,55 @@ const Home = () => {
 								alt="Ziarah"
 								onError={(e) => { e.currentTarget.style.display = 'none' }}
 							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
+						</div>
+						<div className="image-card">
+							<img
+								src={asset("dosen1.jpg")}
+								alt="Ziarah"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
+							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
+						</div>
+						<div className="image-card">
+							<img
+								src={asset("dosen2.jpg")}
+								alt="Ziarah"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
+							/>
 							<div className="image-caption">Kebersamaan kelas — UNHASY Tebuireng Jombang</div>
+						</div>
+						<div className="image-card">
+							<img
+								src={asset("dosen3.jpg")}
+								alt="Ziarah"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
+							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
+						</div>
+						<div className="image-card">
+							<img
+								src={asset("dosen4.jpg")}
+								alt="Ziarah"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
+							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
+						</div>
+						<div className="image-card">
+							<img
+								src={asset("dosen5.jpg")}
+								alt="Ziarah"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
+							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
+						</div>
+						<div className="image-card">
+							<img
+								src={asset("dosen6.jpg")}
+								alt="Ziarah"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
+							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
 						</div>
 					</Slider>
 				</div>

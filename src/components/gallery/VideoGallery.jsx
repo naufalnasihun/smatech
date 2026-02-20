@@ -58,7 +58,7 @@ const VideoGallery = () => {
   }
 
   return (
-    <div id="VideoGallery" className="mx-[10%]">
+    <div id="VideoGallery">
       {videos.length === 0 ? (
         <div className="empty-state">
           <div className="empty-state-card">

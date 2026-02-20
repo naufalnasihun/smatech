@@ -40,7 +40,7 @@ function TextAnonimWidget() {
 	}
 	return (
 		<div className="md:col-span-3" id="TextAnonimWidget">
-			<div className="mx-auto" style={{ maxWidth: "clamp(420px, 58vw, 720px)" }}>
+			<div className="mx-auto" style={{ maxWidth: "min(100%, 720px)" }}>
 				<div
 					className="rounded-2xl border border-white/15 bg-white/10 text-white overflow-hidden"
 					style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.25)" }}
@@ -69,19 +69,19 @@ function TextAnonimWidget() {
 							)
 						})}
 					</div>
-					<div className="flex border-t border-white/10 px-4 py-4 gap-3">
+					<div className="flex border-t border-white/10 px-4 py-4 gap-2 md:gap-3">
 						<input
 							type="text"
 							value={text}
 							onChange={(e) => setText(e.target.value)}
 							onKeyDown={(e) => { if (e.key === "Enter") send() }}
-							className="flex-1 bg-white/10 text-white px-3 py-2 outline-none rounded-lg"
+							className="flex-1 min-w-0 bg-white/10 text-white px-3 py-2 outline-none rounded-lg"
 							placeholder="Ketik pesan..."
 						/>
 						<button
 							type="button"
 							onClick={send}
-							className="px-5 py-2 bg-blue-600 rounded-lg"
+							className="px-4 md:px-5 py-2 bg-blue-600 rounded-lg flex-shrink-0 whitespace-nowrap text-sm md:text-base"
 							style={{ boxShadow: "0 6px 20px rgba(37,99,235,0.4)" }}
 						>
 							Kirim
@@ -343,7 +343,7 @@ function App() {
 							<span className="text-xl">📘</span>
 							<div className="text-lg font-semibold">Tentang Kelas</div>
 						</div>
-						<div className="opacity-80 text-sm">smatech.in_k — Smart Technology Information Karyawan (UNHASY).</div>
+						<div className="opacity-80 text-sm">smatech.in_k — Smart Technology Informatics Karyawan (UNHASY).</div>
 					</button>
 					<a href="https://unhasy.ac.id" target="_blank" rel="noopener noreferrer" className="block p-5 rounded-2xl info-card hover-link">
 						<div className="flex items-center gap-3 mb-2">

@@ -257,6 +257,23 @@ body {
 	margin: 0 -8px;
 }
 
+/* Dots Photo Gallery satu baris, rapi dan tidak membungkus */
+#Carousel .slick-dots {
+	position: static;
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: center;
+	gap: 6px;
+	padding: 0 8px;
+	overflow-x: auto;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+#Carousel .slick-dots::-webkit-scrollbar { display: none; }
+#Carousel .slick-dots li { margin: 0; width: auto; }
+#Carousel .slick-dots li button:before { font-size: 8px; opacity: 0.6; }
+#Carousel .slick-dots li.slick-active button:before { opacity: 0.95; color: #fff; }
+
 /* Global section spacing */
 .section-title {
 	color: #fff;
@@ -920,6 +937,10 @@ input:focus {
 		0 10px 30px rgba(0,0,0,0.40),
 		0 0 26px rgba(34,211,238,0.30),
 		0 0 34px rgba(99,102,241,0.24);
+}
+.profile-photo.pressed {
+	transform: scale(1.08);
+	filter: saturate(1.08) contrast(1.06);
 }
 .profile-name {
 	box-shadow: 0 6px 20px rgba(0,0,0,0.25);

@@ -1,8 +1,9 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import AOS from "aos"
 import "aos/dist/aos.css"
 
 const StrukturKelas = () => {
+	const [pressed, setPressed] = useState(null)
 	useEffect(() => {
 		AOS.init()
 		AOS.refresh()
@@ -39,8 +40,13 @@ const StrukturKelas = () => {
 						<img
 							src={item.photoUrl ? item.photoUrl : `/struktur/${toFilename(item.nama)}.jpg`}
 							alt={item.nama}
-							className="profile-photo h-20 w-20 md:h-24 md:w-24 rounded-full object-cover mb-2 brightness-105"
+							className={`profile-photo h-20 w-20 md:h-24 md:w-24 rounded-full object-cover mb-2 brightness-105 ${pressed === idx ? "pressed" : ""}`}
 							onError={(e) => { e.currentTarget.src = "/user.svg" }}
+							onMouseDown={() => setPressed(idx)}
+							onMouseUp={() => setPressed(null)}
+							onMouseLeave={() => setPressed(null)}
+							onTouchStart={() => setPressed(idx)}
+							onTouchEnd={() => setPressed(null)}
 						/>
 						<div className="profile-name bg-white text-black rounded-3xl text-xs md:text-sm px-3 py-2 font-semibold text-center w-[86%]">
 							{item.nama}
