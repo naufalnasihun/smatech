@@ -49,8 +49,9 @@ const Home = () => {
 	const key = `${d.getMonth() + 1}-${d.getDate()}`
 	const asset = (p) => {
 		const base = import.meta.env.BASE_URL || "/"
-		const clean = encodeURIComponent(String(p || "").replace(/^\//, ""))
-		return `${base}${clean}`
+		const s = String(p || "").replace(/^\//, "")
+		const enc = s.split("/").map((seg) => encodeURIComponent(seg)).join("/")
+		return `${base}${enc}`
 	}
 	const seasonal = specials[override || key] || {
 		title: "Selamat menjalankan ibadah puasa",

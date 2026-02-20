@@ -12,8 +12,9 @@ const units = ["/Rating/1.png", "/Rating/2.png", "/Rating/3.png", "/Rating/4.png
 export default function Rating() {
     const asset = (p) => {
         const base = import.meta.env.BASE_URL || "/"
-        const clean = encodeURIComponent(String(p || "").replace(/^\//, ""))
-        return `${base}${clean}`
+        const s = String(p || "").replace(/^\//, "")
+        const enc = s.split("/").map((seg) => encodeURIComponent(seg)).join("/")
+        return `${base}${enc}`
     }
     const [value, setValue] = React.useState(() => {
         const lastRating = localStorage.getItem("lastRating")

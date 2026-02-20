@@ -9,8 +9,9 @@ const VideoGallery = () => {
     const s = String(u)
     if (/^(https?:|data:)/.test(s)) return s
     const base = import.meta.env.BASE_URL || "/"
-    const clean = encodeURIComponent(s.replace(/^\//, ""))
-    return `${base}${clean}`
+    const t = s.replace(/^\//, "")
+    const enc = t.split("/").map((seg) => encodeURIComponent(seg)).join("/")
+    return `${base}${enc}`
   }
   const [videos, setVideos] = useState([])
 
