@@ -98,7 +98,11 @@ const Home = () => {
 		{ url: "/Barasuara - Terbuang Dalam Waktu (Official Video) - Barasuara.mp3", title: "Terbuang Dalam Waktu", artist: "Barasuara" },
 		{ url: "/Hindia - everything u are - Hindia.mp3", title: "everything u are", artist: "Hindia" },
 	]), [])
-	const safeUrl = (url) => `/${encodeURIComponent((url || "").replace(/^\//, ""))}`
+	const safeUrl = (url) => {
+		const base = import.meta.env.BASE_URL || "/"
+		const clean = encodeURIComponent((url || "").replace(/^\//, ""))
+		return `${base}${clean}`
+	}
 	const playlists = useMemo(() => ([{ name: "Default", tracks }]), [tracks])
 	const [plyIdx] = useState(0)
 	const [trkIdx, setTrkIdx] = useState(0)
@@ -267,8 +271,8 @@ const Home = () => {
 				<div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 mt-8">
 					<a href="#Informasi" className="cta-btn">Lihat Informasi</a>
 					<a href="#Gallery" className="cta-btn">Buka Gallery</a>
-					<a href="#ChatAnonim_lg" className="cta-btn">Buka Chat</a>
 					<a href="#MusicPlayer" className="cta-btn">Fitur Lagu</a>
+					<a href="#TextAnonimWidget" className="cta-btn">Buka Text Anonim</a>
 				</div>
 				<div className="mt-6 w-full max-w-2xl px-3 md:px-0" id="MusicPlayer">
 					<div className="music-card p-4">
@@ -298,7 +302,7 @@ const Home = () => {
 				</div>
 				<audio
 					ref={audioRef}
-					preload="auto"
+					preload="metadata"
 					onError={() => {}}
 					onLoadedMetadata={() => {
 						const a = audioRef.current
@@ -328,20 +332,17 @@ const Home = () => {
 				
 				
 
-				<div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mt-6 w-full max-w-2xl">
-					<div className="info-card px-4 py-3">
-						<div className="opacity-80 text-xs">Total Siswa</div>
-						<div className="text-xl font-bold mt-1">13</div>
+				<div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-6 mt-6 w-full max-w-3xl lg:max-w-4xl">
+					<div className="info-card px-4 py-3 md:px-5 md:py-4 flex flex-col items-center min-h-[76px] md:min-h-[88px]">
+						<div className="opacity-80 text-xs md:text-sm">Total Siswa</div>
+						<div className="text-2xl md:text-3xl font-bold mt-1">13</div>
 					</div>
-					<div className="info-card px-4 py-3">
-						<div className="opacity-80 text-xs">Jadwal Ramadhan</div>
-						<div className="text-xl font-bold mt-1">Aktif</div>
-					</div>
-					<div className="info-card px-4 py-3 col-span-2 md:col-span-1">
-						<div className="opacity-80 text-xs">Anonim Chat</div>
-						<div className="text-xl font-bold mt-1">Buka</div>
+					<div className="info-card px-4 py-3 md:px-5 md:py-4 flex flex-col items-center min-h-[76px] md:min-h-[88px]">
+						<div className="opacity-80 text-xs md:text-sm">Jadwal Ramadhan</div>
+						<div className="text-2xl md:text-3xl font-bold mt-1">Aktif</div>
 					</div>
 				</div>
+					
 				<div className="max-w-2xl mx-auto mt-6 px-3 md:px-0">
 					<div className={`seasonal-card ${override === "2-14" || key === "2-14" ? "valentine" : ""}`} style={{ position: "relative" }}>
 						<div className="seasonal-card-title">{seasonal.title}</div>

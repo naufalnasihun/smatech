@@ -1,11 +1,92 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import Home from "./Pages/Home"
 import Carousel from "./Pages/Gallery"
 import FullWidthTabs from "./Pages/Tabs"
 import Footer from "./Pages/Footer"
-import Chat from "./components/ChatAnonim"
 import AOS from "aos"
 import "aos/dist/aos.css"
+
+function TextAnonimWidget() {
+	const [messages, setMessages] = useState(() => {
+		try {
+			const raw = localStorage.getItem("anon_msgs")
+			return raw ? JSON.parse(raw) : []
+		} catch {
+			return []
+		}
+	})
+	const [text, setText] = useState("")
+	const boxRef = useRef(null)
+	useEffect(() => {
+		try {
+			const capped = Array.isArray(messages) ? messages.slice(-200) : []
+			localStorage.setItem("anon_msgs", JSON.stringify(capped))
+		} catch (e) { void e }
+	}, [messages])
+	const send = () => {
+		const v = (text || "").trim()
+		if (!v) return
+		setMessages((prev) => [...prev, { text: v, ts: Date.now() }])
+		setText("")
+		setTimeout(() => {
+			const el = boxRef.current
+			if (el) el.scrollTop = el.scrollHeight
+		}, 0)
+	}
+	return (
+		<div className="md:col-span-3" id="TextAnonimWidget">
+			<div className="mx-auto" style={{ maxWidth: "clamp(420px, 58vw, 720px)" }}>
+				<div
+					className="rounded-2xl border border-white/15 bg-white/10 text-white overflow-hidden"
+					style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.25)" }}
+				>
+					<div className="px-5 py-3 text-center text-[1.05rem] font-semibold flex items-center justify-center gap-2 border-b border-white/10">
+						<img src="/profil.svg" alt="" style={{ width: 20, height: 20 }} />
+						<span>Text Anonim</span>
+					</div>
+					<div
+						ref={boxRef}
+						className="px-4 py-3"
+						style={{ height: "clamp(260px, 38vh, 380px)", overflowY: "auto" }}
+					>
+						{messages.map((m, i) => {
+							const t = typeof m === "string" ? m : m?.text
+							return (
+								<div key={i} className="mb-3 flex items-start gap-3">
+									<img src="/profil.svg" alt="" style={{ width: 24, height: 24, borderRadius: 9999 }} />
+									<div
+										className="px-3 py-2 rounded-lg"
+										style={{ background: "rgba(255,255,255,0.08)", flex: 1, wordBreak: "break-word" }}
+									>
+										{t}
+									</div>
+								</div>
+							)
+						})}
+					</div>
+					<div className="flex border-t border-white/10 px-4 py-4 gap-3">
+						<input
+							type="text"
+							value={text}
+							onChange={(e) => setText(e.target.value)}
+							onKeyDown={(e) => { if (e.key === "Enter") send() }}
+							className="flex-1 bg-white/10 text-white px-3 py-2 outline-none rounded-lg"
+							placeholder="Ketik pesan..."
+						/>
+						<button
+							type="button"
+							onClick={send}
+							className="px-5 py-2 bg-blue-600 rounded-lg"
+							style={{ boxShadow: "0 6px 20px rgba(37,99,235,0.4)" }}
+						>
+							Kirim
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	)
+}
 
 function App() {
 	const [now, setNow] = useState(new Date())
@@ -130,16 +211,7 @@ function App() {
 		AOS.init()
 		AOS.refresh()
 		if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual"
-		if (location.hash) {
-			history.replaceState(null, "", location.pathname + location.search)
-		}
-		window.scrollTo({ top: 0, left: 0, behavior: "auto" })
-		requestAnimationFrame(() => {
-			window.scrollTo({ top: 0, left: 0, behavior: "auto" })
-		})
-		setTimeout(() => {
-			window.scrollTo({ top: 0, left: 0, behavior: "auto" })
-		}, 250)
+		if (location.hash) history.replaceState(null, "", location.pathname + location.search)
 	}, [])
 	useEffect(() => {
 		setShowTopNotif(true)
@@ -147,34 +219,7 @@ function App() {
 		return () => clearTimeout(t)
 	}, [])
 
-	useEffect(() => {
-		const handlePageShow = () => {
-			window.scrollTo({ top: 0, left: 0, behavior: "auto" })
-			requestAnimationFrame(() => {
-				window.scrollTo({ top: 0, left: 0, behavior: "auto" })
-			})
-			setTimeout(() => {
-				window.scrollTo({ top: 0, left: 0, behavior: "auto" })
-			}, 250)
-		}
-		window.addEventListener("pageshow", handlePageShow)
-		return () => window.removeEventListener("pageshow", handlePageShow)
-	}, [])
-
-	useEffect(() => {
-		const handleAnchorClick = (e) => {
-			const link = e.target.closest('a[href^="#"]')
-			if (!link) return
-			const id = link.getAttribute("href").slice(1)
-			if (!id) return
-			const el = document.getElementById(id)
-			if (!el) return
-			e.preventDefault()
-			el.scrollIntoView({ behavior: "smooth", block: "start" })
-		}
-		document.addEventListener("click", handleAnchorClick)
-		return () => document.removeEventListener("click", handleAnchorClick)
-	}, [])
+	
 
 	useEffect(() => {
 		const t = setInterval(() => setNow(new Date()), 1000)
@@ -302,13 +347,7 @@ function App() {
 						</div>
 						<div className="opacity-80 text-sm">Universitas Hasyim Asy&apos;ari, Tebuireng Jombang.</div>
 					</a>
-					<a href="#ChatAnonim_lg" className="block p-5 rounded-2xl info-card hover-link">
-						<div className="flex items-center gap-3 mb-2">
-							<span className="text-xl">📬</span>
-							<div className="text-lg font-semibold">Kontak</div>
-						</div>
-						<div className="opacity-80 text-sm">Info kegiatan & pengumuman akan diupdate berkala.</div>
-					</a>
+					
 				</div>
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 mb-8">
 					<a href="#Informasi" className="block p-5 rounded-2xl info-card hover-link">
@@ -361,18 +400,29 @@ function App() {
 						</div>
 						<div className="opacity-80 text-sm">Pusat layanan online mahasiswa FTI UNHASY.</div>
 					</a>
+					<button
+						type="button"
+						className="block w-full text-left p-5 rounded-2xl info-card hover-link"
+						onClick={() => {
+							const el = document.getElementById("TextAnonimWidget")
+							if (el) el.scrollIntoView({ behavior: "smooth", block: "start" })
+							const inp = el ? el.querySelector('input[type="text"]') : null
+							if (inp) inp.focus()
+						}}
+					>
+						<div className="flex items-center gap-3 mb-2">
+							<span className="text-xl">💬</span>
+							<div className="text-lg font-semibold">Text Anonim</div>
+						</div>
+						<div className="opacity-80 text-sm">Buka dan kirim pesan anonim kelas.</div>
+					</button>
+					<TextAnonimWidget />
 				</div>
 				
 			</div>
 
 
-			<div
-				className="mx-[5%] lg:mx-[12%] mt-8 lg:mt-10 mb-10 lg:mb-20"
-				id="ChatAnonim_lg"
-				data-aos="fade-up"
-				data-aos-duration="1200">
-				<Chat />
-			</div>
+			
 			
 
 			<Footer />
