@@ -4,6 +4,14 @@ import { getStorage, ref, listAll, getDownloadURL, getMetadata } from "firebase/
 import { LOCAL_VIDEOS } from "../../data/galleryMedia"
 
 const VideoGallery = () => {
+  const asset = (u) => {
+    if (!u) return u
+    const s = String(u)
+    if (/^(https?:|data:)/.test(s)) return s
+    const base = import.meta.env.BASE_URL || "/"
+    const clean = encodeURIComponent(s.replace(/^\//, ""))
+    return `${base}${clean}`
+  }
   const [videos, setVideos] = useState([])
 
   const fetchVideos = async () => {
@@ -66,7 +74,7 @@ const VideoGallery = () => {
             return (
             <div key={idx} className="video-card">
               <video
-                src={url}
+                src={asset(url)}
                 controls
                 controlsList="nodownload noplaybackrate noremoteplayback"
                 disablePictureInPicture

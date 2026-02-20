@@ -7,6 +7,11 @@ import AOS from "aos"
 import "aos/dist/aos.css"
 
 function TextAnonimWidget() {
+	const asset = (p) => {
+		const base = import.meta.env.BASE_URL || "/"
+		const clean = encodeURIComponent(String(p || "").replace(/^\//, ""))
+		return `${base}${clean}`
+	}
 	const [messages, setMessages] = useState(() => {
 		try {
 			const raw = localStorage.getItem("anon_msgs")
@@ -41,7 +46,7 @@ function TextAnonimWidget() {
 					style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.25)" }}
 				>
 					<div className="px-5 py-3 text-center text-[1.05rem] font-semibold flex items-center justify-center gap-2 border-b border-white/10">
-						<img src="/profil.svg" alt="" style={{ width: 20, height: 20 }} />
+						<img src={asset("profil.svg")} alt="" style={{ width: 20, height: 20 }} />
 						<span>Text Anonim</span>
 					</div>
 					<div
@@ -53,7 +58,7 @@ function TextAnonimWidget() {
 							const t = typeof m === "string" ? m : m?.text
 							return (
 								<div key={i} className="mb-3 flex items-start gap-3">
-									<img src="/profil.svg" alt="" style={{ width: 24, height: 24, borderRadius: 9999 }} />
+									<img src={asset("profil.svg")} alt="" style={{ width: 24, height: 24, borderRadius: 9999 }} />
 									<div
 										className="px-3 py-2 rounded-lg"
 										style={{ background: "rgba(255,255,255,0.08)", flex: 1, wordBreak: "break-word" }}

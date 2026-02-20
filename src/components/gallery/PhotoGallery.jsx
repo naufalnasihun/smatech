@@ -9,6 +9,14 @@ import { LOCAL_PHOTOS } from "../../data/galleryMedia"
 const STORAGE_KEY = "gallery_local_photos"
 
 const PhotoGallery = () => {
+  const asset = (u) => {
+    if (!u) return u
+    const s = String(u)
+    if (/^(https?:|data:)/.test(s)) return s
+    const base = import.meta.env.BASE_URL || "/"
+    const clean = encodeURIComponent(s.replace(/^\//, ""))
+    return `${base}${clean}`
+  }
   const [images, setImages] = useState([])
   const [open, setOpen] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
@@ -90,7 +98,7 @@ const PhotoGallery = () => {
           const name = typeof item === "string" ? base : (item.name || base)
           return (
             <div key={idx} className="image-card" onClick={() => onClickImage(url)} style={{ cursor: "pointer" }}>
-              <img src={url} alt={name} onError={(e) => { e.currentTarget.style.display = 'none' }} />
+              <img src={asset(url)} alt={name} onError={(e) => { e.currentTarget.style.display = 'none' }} />
               <div className="image-caption">{name}</div>
             </div>
           )

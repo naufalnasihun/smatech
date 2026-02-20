@@ -58,6 +58,11 @@ Fade.propTypes = {
 } */
 
 export default function ButtonSend() {
+	const asset = (p) => {
+		const base = import.meta.env.BASE_URL || "/"
+		const clean = encodeURIComponent(String(p || "").replace(/^\//, ""))
+		return `${base}${clean}`
+	}
 	const [open, setOpen] = React.useState(false)
 	const handleOpen = () => setOpen(true)
 	const handleClose = () => setOpen(false)
@@ -67,7 +72,7 @@ export default function ButtonSend() {
 			<Button onClick={handleOpen}>
 				<div className="flex items-center space-x-2 text-white px-4 py-2 md:px-6 md:py-4 text-sm md:text-base" id="SendImg">
 					<span className="text-sm md:text-base lg:text-1xl">Send</span>
-					<img src="/upload.png" alt="Icon" className="w-5 h-5 md:w-6 md:h-6" />
+					<img src={asset("upload.png")} alt="Icon" className="w-5 h-5 md:w-6 md:h-6" />
 				</div>
 			</Button>
 

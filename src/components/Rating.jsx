@@ -10,6 +10,11 @@ const units = ["/Rating/1.png", "/Rating/2.png", "/Rating/3.png", "/Rating/4.png
 // Firestore dari konfigurasi aplikasi
 
 export default function Rating() {
+    const asset = (p) => {
+        const base = import.meta.env.BASE_URL || "/"
+        const clean = encodeURIComponent(String(p || "").replace(/^\//, ""))
+        return `${base}${clean}`
+    }
     const [value, setValue] = React.useState(() => {
         const lastRating = localStorage.getItem("lastRating")
         return lastRating ? parseFloat(lastRating) : 5.0
@@ -85,7 +90,7 @@ export default function Rating() {
             </Typography>
             <div className="flex justify-center mb-3">
                 <img
-                    src={units[imgIndex]}
+                    src={asset(units[imgIndex])}
                     alt={`Rating ${imgIndex + 1}`}
                     className="w-10 h-10"
                     id="ImgRating"
@@ -121,7 +126,7 @@ export default function Rating() {
                 <div style={{ marginTop: "12px" }}>
                     <div className="text-white text-xs font-medium mb-2">Video</div>
                     <video
-                        src="/Rating/video.mp4"
+                        src={asset("Rating/video.mp4")}
                         controls
                         playsInline
                         className="w-full rounded-lg"

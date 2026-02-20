@@ -23,3 +23,9 @@ node_modules
 
 # Build output
 dist/
+
+# Env & misc
+.env
+.env.*
+*.pem
+coverage/

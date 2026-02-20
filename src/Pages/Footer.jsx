@@ -1,6 +1,11 @@
 import Rating from "../components/Rating"
 
 const Footer = () => {
+	const asset = (p) => {
+		const base = import.meta.env.BASE_URL || "/"
+		const clean = encodeURIComponent(String(p || "").replace(/^\//, ""))
+		return `${base}${clean}`
+	}
 	return (
 		<footer className="" id="Footer">
 			<div className="mx-auto w-full max-w-screen-xl px-8 py-6 lg:py-8">
@@ -8,7 +13,7 @@ const Footer = () => {
 					<div className="mb-6 md:mb-0">
 						<a href="#" className="flex items-center">
 							<img
-								src="/logoo.jpg"
+								src={asset("logoo.jpg")}
 								alt=""
 								className="h-[4.5rem] w-[4.5rem] right-2 relative rounded-full brightness-200"
 							/>

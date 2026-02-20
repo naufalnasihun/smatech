@@ -47,10 +47,15 @@ const Home = () => {
 	const params = new URLSearchParams(window.location.search)
 	const override = params.get("special")
 	const key = `${d.getMonth() + 1}-${d.getDate()}`
+	const asset = (p) => {
+		const base = import.meta.env.BASE_URL || "/"
+		const clean = encodeURIComponent(String(p || "").replace(/^\//, ""))
+		return `${base}${clean}`
+	}
 	const seasonal = specials[override || key] || {
 		title: "Selamat menjalankan ibadah puasa",
 		subtitle: "Semoga ibadah kita diterima, tetap semangat belajar.",
-		image: "/kebersamaan.jpg",
+		image: asset("kebersamaan.jpg"),
 	}
 	const year = d.getFullYear()
 	const ramadhanSchedule = {
@@ -261,7 +266,7 @@ const Home = () => {
 				<div className="mt-6">
 					<div className="hero-logo">
 						<img
-							src="/logoo.jpg"
+							src={asset("logoo.jpg")}
 							alt="Logo"
 							onError={(e) => { e.currentTarget.style.display = 'none' }}
 						/>
@@ -379,15 +384,15 @@ const Home = () => {
 					>
 						<div className="image-card">
 							<img
-								src="/rujakan-ziarah.jpg"
+								src={asset("rujakan.jpg")}
 								alt="Rujakan Ziarah"
-								onError={(e) => { e.currentTarget.src = (seasonal.image || "/kebersamaan.jpg") }}
+								onError={(e) => { e.currentTarget.src = (seasonal.image || asset("kebersamaan.jpg")) }}
 							/>
 							<div className="image-caption">Kebersamaan kelas — UNHASY Tebuireng Jombang</div>
 						</div>
 						<div className="image-card">
 							<img
-								src="/ziarah.jpg"
+								src={asset("ziarah.jpg")}
 								alt="Ziarah"
 								onError={(e) => { e.currentTarget.style.display = 'none' }}
 							/>

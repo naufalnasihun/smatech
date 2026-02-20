@@ -12,6 +12,11 @@ import { addDoc } from "firebase/firestore"
 import { getDocs, collection } from "firebase/firestore"
 
 export default function ButtonRequest() {
+	const asset = (p) => {
+		const base = import.meta.env.BASE_URL || "/"
+		const clean = encodeURIComponent(String(p || "").replace(/^\//, ""))
+		return `${base}${clean}`
+	}
 	const [open, setOpen] = useState(false)
 	const handleOpen = () => setOpen(true)
 	const handleClose = () => setOpen(false)
@@ -285,7 +290,7 @@ export default function ButtonRequest() {
 				onClick={handleOpen}
 				className="flex items-center space-x-2 text-white px-4 py-2 md:px-6 md:py-4 text-sm md:text-base"
 				id="SendRequest">
-				<img src="/Request.png" alt="Icon" className="w-5 h-5 md:w-6 md:h-6 relative bottom-0.5" />
+				<img src={asset("Request.png")} alt="Icon" className="w-5 h-5 md:w-6 md:h-6 relative bottom-0.5" />
 				<span className="text-sm md:text-base lg:text-1xl">Request</span>
 			</button>
 
