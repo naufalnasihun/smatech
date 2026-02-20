@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react"
 import AOS from "aos"
 import "aos/dist/aos.css"
 
-const Senin = React.lazy(() => import("../components/mapel/Senin"))
-const Selasa = React.lazy(() => import("../components/mapel/Selasa"))
-const Rabu = React.lazy(() => import("../components/mapel/Rabu"))
-const Kamis = React.lazy(() => import("../components/mapel/Kamis"))
-const Jumat = React.lazy(() => import("../components/mapel/Jumat"))
-const Sabtu = React.lazy(() => import("../components/mapel/Sabtu"))
-const Minggu = React.lazy(() => import("../components/mapel/Minggu"))
+const Senin = React.lazy(() => import("../components/Mapel/Senin"))
+const Selasa = React.lazy(() => import("../components/Mapel/Selasa"))
+const Rabu = React.lazy(() => import("../components/Mapel/Rabu"))
+const Kamis = React.lazy(() => import("../components/Mapel/Kamis"))
+const Jumat = React.lazy(() => import("../components/Mapel/Jumat"))
+const Sabtu = React.lazy(() => import("../components/Mapel/Sabtu"))
+const Minggu = React.lazy(() => import("../components/Mapel/Minggu"))
 
 const Schedule = () => {
     const dayNames = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]

@@ -5,8 +5,15 @@ import FullWidthTabs from "./Pages/Tabs"
 import Footer from "./Pages/Footer"
 import AOS from "aos"
 import "aos/dist/aos.css"
+import { db } from "./firebase"
+import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore"
 
 function TextAnonimWidget() {
+	const asset = (p) => {
+		const base = import.meta.env.BASE_URL || "/"
+		const clean = encodeURIComponent(String(p || "").replace(/^\//, ""))
+		return `${base}${clean}`
+	}
 	const [messages, setMessages] = useState(() => {
 		try {
 			const raw = localStorage.getItem("anon_msgs")
@@ -18,15 +25,41 @@ function TextAnonimWidget() {
 	const [text, setText] = useState("")
 	const boxRef = useRef(null)
 	useEffect(() => {
-		try {
-			const capped = Array.isArray(messages) ? messages.slice(-200) : []
-			localStorage.setItem("anon_msgs", JSON.stringify(capped))
-		} catch (e) { void e }
+		if (db) {
+			const q = query(collection(db, "anon_msgs_public"), orderBy("createdAt", "asc"))
+			const unsub = onSnapshot(q, (snap) => {
+				const list = snap.docs.map((d) => d.data()?.text).filter(Boolean)
+				setMessages(list)
+				setTimeout(() => {
+					const el = boxRef.current
+					if (el) el.scrollTop = el.scrollHeight
+				}, 0)
+		 })
+			return () => unsub()
+		} else {
+			try {
+				const raw = localStorage.getItem("anon_msgs")
+				const list = raw ? JSON.parse(raw) : []
+				setMessages(Array.isArray(list) ? list.map(m => m?.text || m).filter(Boolean) : [])
+			} catch { /* ignore */ }
+		}
+	}, [])
+	useEffect(() => {
+		if (!db) {
+			try {
+				const capped = Array.isArray(messages) ? messages.slice(-200) : []
+				localStorage.setItem("anon_msgs", JSON.stringify(capped.map(t => ({ text: t }))))
+			} catch (e) { void e }
+		}
 	}, [messages])
 	const send = () => {
 		const v = (text || "").trim()
 		if (!v) return
-		setMessages((prev) => [...prev, { text: v, ts: Date.now() }])
+		if (db) {
+			addDoc(collection(db, "anon_msgs_public"), { text: v, createdAt: serverTimestamp() }).catch(() => {})
+		} else {
+			setMessages((prev) => [...prev, v])
+		}
 		setText("")
 		setTimeout(() => {
 			const el = boxRef.current
@@ -35,13 +68,13 @@ function TextAnonimWidget() {
 	}
 	return (
 		<div className="md:col-span-3" id="TextAnonimWidget">
-			<div className="mx-auto" style={{ maxWidth: "clamp(420px, 58vw, 720px)" }}>
+			<div className="mx-auto" style={{ maxWidth: "min(100%, 720px)" }}>
 				<div
 					className="rounded-2xl border border-white/15 bg-white/10 text-white overflow-hidden"
 					style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.25)" }}
 				>
 					<div className="px-5 py-3 text-center text-[1.05rem] font-semibold flex items-center justify-center gap-2 border-b border-white/10">
-						<img src="/profil.svg" alt="" style={{ width: 20, height: 20 }} />
+						<img src={asset("profil.svg")} alt="" style={{ width: 20, height: 20 }} />
 						<span>Text Anonim</span>
 					</div>
 					<div
@@ -53,7 +86,7 @@ function TextAnonimWidget() {
 							const t = typeof m === "string" ? m : m?.text
 							return (
 								<div key={i} className="mb-3 flex items-start gap-3">
-									<img src="/profil.svg" alt="" style={{ width: 24, height: 24, borderRadius: 9999 }} />
+									<img src={asset("profil.svg")} alt="" style={{ width: 24, height: 24, borderRadius: 9999 }} />
 									<div
 										className="px-3 py-2 rounded-lg"
 										style={{ background: "rgba(255,255,255,0.08)", flex: 1, wordBreak: "break-word" }}
@@ -64,19 +97,19 @@ function TextAnonimWidget() {
 							)
 						})}
 					</div>
-					<div className="flex border-t border-white/10 px-4 py-4 gap-3">
+					<div className="flex border-t border-white/10 px-4 py-4 gap-2 md:gap-3">
 						<input
 							type="text"
 							value={text}
 							onChange={(e) => setText(e.target.value)}
 							onKeyDown={(e) => { if (e.key === "Enter") send() }}
-							className="flex-1 bg-white/10 text-white px-3 py-2 outline-none rounded-lg"
+							className="flex-1 min-w-0 bg-white/10 text-white px-3 py-2 outline-none rounded-lg"
 							placeholder="Ketik pesan..."
 						/>
 						<button
 							type="button"
 							onClick={send}
-							className="px-5 py-2 bg-blue-600 rounded-lg"
+							className="px-4 md:px-5 py-2 bg-blue-600 rounded-lg flex-shrink-0 whitespace-nowrap text-sm md:text-base"
 							style={{ boxShadow: "0 6px 20px rgba(37,99,235,0.4)" }}
 						>
 							Kirim
@@ -338,7 +371,7 @@ function App() {
 							<span className="text-xl">📘</span>
 							<div className="text-lg font-semibold">Tentang Kelas</div>
 						</div>
-						<div className="opacity-80 text-sm">smatech.in_k — Smart Technology Information Karyawan (UNHASY).</div>
+						<div className="opacity-80 text-sm">smatech.in_k — Smart Technology Informatics Karyawan (UNHASY).</div>
 					</button>
 					<a href="https://unhasy.ac.id" target="_blank" rel="noopener noreferrer" className="block p-5 rounded-2xl info-card hover-link">
 						<div className="flex items-center gap-3 mb-2">

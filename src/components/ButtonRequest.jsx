@@ -12,6 +12,11 @@ import { addDoc } from "firebase/firestore"
 import { getDocs, collection } from "firebase/firestore"
 
 export default function ButtonRequest() {
+	const asset = (p) => {
+		const base = import.meta.env.BASE_URL || "/"
+		const clean = encodeURIComponent(String(p || "").replace(/^\//, ""))
+		return `${base}${clean}`
+	}
 	const [open, setOpen] = useState(false)
 	const handleOpen = () => setOpen(true)
 	const handleClose = () => setOpen(false)
@@ -36,9 +41,15 @@ export default function ButtonRequest() {
 	const fetchImagesFromFirebase = async () => {
 		try {
 			const storage = getStorage()
-			const storageRef = ref(storage, "images/")
+			let storageRef = ref(storage, "images_pending/")
 
-			const imagesList = await listAll(storageRef)
+			let imagesList
+			try {
+				imagesList = await listAll(storageRef)
+			} catch {
+				storageRef = ref(storage, "images/")
+				imagesList = await listAll(storageRef).catch(() => ({ items: [] }))
+			}
 
 			const imagePromises = imagesList.items.map(async (item) => {
 				const url = await getDownloadURL(item)
@@ -55,7 +66,7 @@ export default function ButtonRequest() {
 			const imageURLs = await Promise.all(imagePromises)
 
 			// Urutkan array berdasarkan timestamp (dari yang terlama)
-			imageURLs.sort((a, b) => a.timestamp - b.timestamp)
+			imageURLs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
 
 			setImages(imageURLs)
 						} catch (error) {
@@ -85,7 +96,7 @@ export default function ButtonRequest() {
 				}
 			})
 			const videoURLs = await Promise.all(videoPromises)
-			videoURLs.sort((a, b) => a.timestamp - b.timestamp)
+			videoURLs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
 			setVideos(videoURLs)
 		} catch (error) {
 			console.warn("Gagal memuat video dari Storage:", error)
@@ -157,6 +168,8 @@ export default function ButtonRequest() {
 		}
 	}
 
+	// tidak ada tombol hapus; daftar dikosongkan dengan membaca folder kosong
+
 	const rejectVideo = async (videoData) => {
 		try {
 			const storage = getStorage()
@@ -173,26 +186,14 @@ export default function ButtonRequest() {
 		if (!isAdmin) return
 		try {
 			const storage = getStorage()
-			// Hapus semua gambar pending
-			for (const img of images) {
-				if (!img.fullPath) continue
-				try {
-					const src = ref(storage, img.fullPath)
-					await deleteObject(src)
-				} catch (e) {
-					console.warn("Gagal hapus gambar:", img.fullPath, e)
-				}
+			// List dan hapus semua file pada path yang umum dipakai
+			const imgList = await listAll(ref(storage, "images/")).catch(() => ({ items: [] }))
+			await Promise.all(imgList.items.map(async (item) => deleteObject(item).catch(() => {})))
+			let vidList = await listAll(ref(storage, "VideoRequest/")).catch(() => ({ items: [] }))
+			if (!vidList.items.length) {
+				vidList = await listAll(ref(storage, "videos/")).catch(() => ({ items: [] }))
 			}
-			// Hapus semua video pending
-			for (const vid of videos) {
-				if (!vid.fullPath) continue
-				try {
-					const src = ref(storage, vid.fullPath)
-					await deleteObject(src)
-				} catch (e) {
-					console.warn("Gagal hapus video:", vid.fullPath, e)
-				}
-			}
+			await Promise.all(vidList.items.map(async (item) => deleteObject(item).catch(() => {})))
 			setImages([])
 			setVideos([])
 			window.dispatchEvent(new CustomEvent("gallery:refresh"))
@@ -285,7 +286,7 @@ export default function ButtonRequest() {
 				onClick={handleOpen}
 				className="flex items-center space-x-2 text-white px-4 py-2 md:px-6 md:py-4 text-sm md:text-base"
 				id="SendRequest">
-				<img src="/Request.png" alt="Icon" className="w-5 h-5 md:w-6 md:h-6 relative bottom-0.5" />
+				<img src={asset("Request.png")} alt="Icon" className="w-5 h-5 md:w-6 md:h-6 relative bottom-0.5" />
 				<span className="text-sm md:text-base lg:text-1xl">Request</span>
 			</button>
 
@@ -306,21 +307,17 @@ export default function ButtonRequest() {
 							onClick={handleClose}
 						/>
 						<Typography id="spring-modal-description" component="div" sx={{ mt: 2 }}>
-							<h6 className="text-center text-white text-2xl mb-5">Request</h6>
-							<div className="flex justify-center gap-3 mb-4">
+							<h6 className="text-center text-white text-2xl mb-6">Request</h6>
+							<div className="flex justify-center gap-3 mb-6">
 								{logged ? (
 									<button onClick={logoutAdmin} className="px-3 py-1 rounded-2xl bg-white/15 text-white text-xs hover:bg-white/25">
 										Logout Admin
 									</button>
-								) : (
-									<button onClick={loginAdmin} className="px-3 py-1 rounded-2xl bg-white/20 text-white text-xs hover:bg-white/30 disabled:opacity-60" disabled={loadingLogin}>
-										{loadingLogin ? "Memproses..." : "Login Admin"}
-									</button>
-								)}
+								) : null}
 								{isAdmin && <span className="px-2 py-1 rounded-2xl bg-green-600/70 text-white text-xs">Admin aktif</span>}
 							</div>
 							{isAdmin && (
-								<div className="flex justify-center">
+								<div className="flex justify-center mb-4">
 									<button
 										onClick={clearAllRequests}
 										className="px-3 py-1 rounded-2xl bg-white/20 text-white text-xs hover:bg-white/30">
@@ -329,20 +326,20 @@ export default function ButtonRequest() {
 								</div>
 							)}
 							{!logged && (
-								<div className="flex flex-col items-center gap-2 mb-4">
+								<div className="flex flex-col items-center gap-2 mb-6 mt-2">
 									<input
 										type="text"
 										value={emailOrUser}
 										onChange={(e) => setEmailOrUser(e.target.value)}
 										placeholder="Email atau Username"
-										className="px-3 py-2 rounded-2xl bg-white/10 text-white text-xs w-[80vw] max-w-[320px]"
+										className="px-3 py-2 rounded-2xl bg-white/10 text-white text-xs w-[86vw] max-w-[360px]"
 									/>
 									<input
 										type="password"
 										value={password}
 										onChange={(e) => setPassword(e.target.value)}
 										placeholder="Password"
-										className="px-3 py-2 rounded-2xl bg-white/10 text-white text-xs w-[80vw] max-w-[320px]"
+										className="px-3 py-2 rounded-2xl bg-white/10 text-white text-xs w-[86vw] max-w-[360px]"
 										onKeyDown={(e) => {
 											if (e.key === "Enter") loginAdminWithPassword()
 										}}
@@ -362,8 +359,16 @@ export default function ButtonRequest() {
 									{loginError && <div className="text-red-300 text-xs mt-1">{loginError}</div>}
 								</div>
 							)}
-							<div className="text-white text-sm font-semibold opacity-90 mt-2 mb-2 px-2">Gambar Request</div>
-							<div className="request-list h-[22rem] overflow-y-scroll overflow-y-scroll-no-thumb">
+							<div className="text-white text-sm font-semibold opacity-90 mt-4 mb-2 px-2">Gambar Request</div>
+							<div className="request-list max-h-[22rem] overflow-y-scroll overflow-y-scroll-no-thumb">
+								{images.length === 0 && (
+									<div className="empty-state">
+										<div className="empty-state-card">
+											<div className="empty-title">Belum ada gambar yang dikirim</div>
+											<div className="empty-sub">Upload akan muncul di sini untuk direview admin</div>
+										</div>
+									</div>
+								)}
 								{images
 									.map((imageData, index) => (
 										<div
@@ -402,7 +407,15 @@ export default function ButtonRequest() {
 									.reverse()}
 							</div>
 							<div className="text-white text-sm font-semibold opacity-90 mt-6 mb-2 px-2">Video Request</div>
-							<div className="request-list h-[22rem] overflow-y-scroll overflow-y-scroll-no-thumb">
+							<div className="request-list max-h-[22rem] overflow-y-scroll overflow-y-scroll-no-thumb">
+								{videos.length === 0 && (
+									<div className="empty-state">
+										<div className="empty-state-card">
+											<div className="empty-title">Belum ada video yang dikirim</div>
+											<div className="empty-sub">Upload akan muncul di sini untuk direview admin</div>
+										</div>
+									</div>
+								)}
 								{videos
 									.map((videoData, index) => (
 										<div

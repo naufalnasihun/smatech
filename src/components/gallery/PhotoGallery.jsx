@@ -9,6 +9,15 @@ import { LOCAL_PHOTOS } from "../../data/galleryMedia"
 const STORAGE_KEY = "gallery_local_photos"
 
 const PhotoGallery = () => {
+  const asset = (u) => {
+    if (!u) return u
+    const s = String(u)
+    if (/^(https?:|data:)/.test(s)) return s
+    const base = import.meta.env.BASE_URL || "/"
+    const t = s.replace(/^\//, "")
+    const enc = t.split("/").map((seg) => encodeURIComponent(seg)).join("/")
+    return `${base}${enc}`
+  }
   const [images, setImages] = useState([])
   const [open, setOpen] = useState(false)
   const [selectedImage, setSelectedImage] = useState(null)
@@ -57,14 +66,15 @@ const PhotoGallery = () => {
   }, [])
 
   const settings = {
-    centerMode: true,
+    centerMode: false,
     centerPadding: "0px",
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2400,
+    autoplaySpeed: 2600,
     dots: true,
-    adaptiveHeight: true,
+    adaptiveHeight: false,
+    lazyLoad: "ondemand",
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 2, arrows: false, centerPadding: "0px" } },
       { breakpoint: 768, settings: { slidesToShow: 1, arrows: false, centerPadding: "0px", centerMode: false, variableWidth: false } },
@@ -90,7 +100,11 @@ const PhotoGallery = () => {
           const name = typeof item === "string" ? base : (item.name || base)
           return (
             <div key={idx} className="image-card" onClick={() => onClickImage(url)} style={{ cursor: "pointer" }}>
-              <img src={url} alt={name} onError={(e) => { e.currentTarget.style.display = 'none' }} />
+              <img
+                src={asset(url)}
+                alt={name}
+                onError={(e) => { e.currentTarget.src = asset("kebersamaan.jpg") }}
+              />
               <div className="image-caption">{name}</div>
             </div>
           )

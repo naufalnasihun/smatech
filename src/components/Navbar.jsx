@@ -18,7 +18,7 @@ const Navbar = () => {
 			{/* Mobile */}
 			<div className="flex justify-between relative top-3 lg:hidden">
 				<div className="w-10 h-10 rounded-full flex justify-center items-center" id="UserButton">
-					<img src="/NavIcon.png" alt="" className="w-6 h-6" onClick={toggleMenu} />
+					<img src="./NavIcon.png" alt="" className="w-6 h-6" onClick={toggleMenu} />
 				</div>
 				<div className={`text-center text-white ${isMenuOpen ? "hidden" : ""}`}>
 					<div className="text-[0.7rem]">Hi, Pengguna smatec.in_k !</div>
@@ -28,7 +28,7 @@ const Navbar = () => {
 				<div
 					className={`w-10 h-10 rounded-full flex justify-center items-center `}
 					id="UserButton">
-					<img src="/user.svg" alt="" className="" />
+					<img src="./user.svg" alt="" className="" />
 				</div>
 
 				{isMenuOpen && (
@@ -68,7 +68,7 @@ const Navbar = () => {
 			{/* Dekstop */}
 			<div className="flex justify-between relative top-3 hidden lg:flex">
 				<div>
-					<img src="/logoo.jpg" className="w-12 h-12 rounded-full" alt="Logo" />
+					<img src="./logoo.jpg" className="w-12 h-12 rounded-full" alt="Logo" />
 				</div>
 				<ul className="mt-2 flex gap-5">
 					<li className="mb-4">

@@ -10,15 +10,18 @@ const units = ["/Rating/1.png", "/Rating/2.png", "/Rating/3.png", "/Rating/4.png
 // Firestore dari konfigurasi aplikasi
 
 export default function Rating() {
+    const asset = (p) => {
+        const base = import.meta.env.BASE_URL || "/"
+        const s = String(p || "").replace(/^\//, "")
+        const enc = s.split("/").map((seg) => encodeURIComponent(seg)).join("/")
+        return `${base}${enc}`
+    }
     const [value, setValue] = React.useState(() => {
         const lastRating = localStorage.getItem("lastRating")
         return lastRating ? parseFloat(lastRating) : 5.0
     })
 
-    const [remainingRatings, setRemainingRatings] = React.useState(() => {
-        const remaining = localStorage.getItem("remainingRatings")
-        return remaining ? parseInt(remaining, 10) : 3
-    })
+    const [cooldown, setCooldown] = React.useState(false)
 
     const [isSubmitting, setIsSubmitting] = React.useState(false)
     const [videoVisible, setVideoVisible] = React.useState(true)
@@ -33,13 +36,13 @@ export default function Rating() {
     })
 
     const handleChange = (event, newValue) => {
-        if (typeof newValue === "number" && remainingRatings > 0) {
+        if (typeof newValue === "number") {
             setValue(newValue)
         }
     }
 
     const handleSliderChange = async (event, newValue) => {
-        if (typeof newValue === "number" && remainingRatings > 0 && !isSubmitting) {
+        if (typeof newValue === "number" && !isSubmitting && !cooldown) {
             setIsSubmitting(true)
             setValue(newValue)
 
@@ -51,11 +54,7 @@ export default function Rating() {
                     })
                 }
 
-                const newRemainingRatings = remainingRatings - 1
-                setRemainingRatings(newRemainingRatings)
-
                 localStorage.setItem("lastRating", newValue.toString())
-                localStorage.setItem("remainingRatings", newRemainingRatings.toString())
 
                 const prevSum = parseFloat(localStorage.getItem("rating_sum") || "0")
                 const prevCount = parseInt(localStorage.getItem("rating_count") || "0", 10)
@@ -69,6 +68,8 @@ export default function Rating() {
                 console.warn("Rating gagal disimpan:", e)
             } finally {
                 setIsSubmitting(false)
+                setCooldown(true)
+                setTimeout(() => setCooldown(false), 500)
             }
         }
     }
@@ -85,7 +86,7 @@ export default function Rating() {
             </Typography>
             <div className="flex justify-center mb-3">
                 <img
-                    src={units[imgIndex]}
+                    src={asset(units[imgIndex])}
                     alt={`Rating ${imgIndex + 1}`}
                     className="w-10 h-10"
                     id="ImgRating"
@@ -100,7 +101,7 @@ export default function Rating() {
                 valueLabelDisplay="off"
                 onChange={handleChange}
                 onChangeCommitted={handleSliderChange}
-                disabled={remainingRatings === 0 || isSubmitting}
+                disabled={isSubmitting || cooldown}
                 sx={{
                     "& .MuiSlider-thumb": {
                         height: "1.5rem",
@@ -121,7 +122,7 @@ export default function Rating() {
                 <div style={{ marginTop: "12px" }}>
                     <div className="text-white text-xs font-medium mb-2">Video</div>
                     <video
-                        src="/Rating/video.mp4"
+                        src={asset("Rating/video.mp4")}
                         controls
                         playsInline
                         className="w-full rounded-lg"

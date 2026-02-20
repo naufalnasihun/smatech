@@ -5,52 +5,58 @@ import { useEffect, useRef, useMemo, useState } from "react"
 const Home = () => {
 	const d = new Date()
 	const specials = {
-		"1-1": { title: "Tahun Baru Masehi", subtitle: "Semoga tahun penuh berkah dan prestasi.", image: "/kebersamaan.jpg" },
-		"1-10": { title: "Hari Gerakan Satu Juta Pohon", subtitle: "Mari hijaukan bumi.", image: "/kebersamaan.jpg" },
-		"1-25": { title: "Hari Gizi Nasional", subtitle: "Jaga pola makan seimbang.", image: "/kebersamaan.jpg" },
-		"2-4": { title: "Hari Kanker Sedunia", subtitle: "Tingkatkan kepedulian dan dukungan.", image: "/kebersamaan.jpg" },
-		"2-9": { title: "Hari Pers Nasional", subtitle: "Apresiasi jurnalisme berkualitas.", image: "/kebersamaan.jpg" },
-		"2-14": { title: "Happy Valentine Class!", subtitle: "Tetap saling dukung dan sayang teman.", image: "/kebersamaan.jpg" },
+		"1-1": { title: "Selamat Tahun Baru Masehi", subtitle: "Semoga tahun penuh berkah dan prestasi.", image: "/kebersamaan.jpg" },
+		"1-10": { title: "Selamat Hari Gerakan Satu Juta Pohon", subtitle: "Mari hijaukan bumi.", image: "/kebersamaan.jpg" },
+		"1-25": { title: "Selamat Hari Gizi Nasional", subtitle: "Jaga pola makan seimbang.", image: "/kebersamaan.jpg" },
+		"2-4": { title: "Selamat Hari Kanker Sedunia", subtitle: "Tingkatkan kepedulian dan dukungan.", image: "/kebersamaan.jpg" },
+		"2-9": { title: "Selamat Hari Pers Nasional", subtitle: "Apresiasi jurnalisme berkualitas.", image: "/kebersamaan.jpg" },
+		"2-14": { title: "Selamat Happy Valentine Class!", subtitle: "Tetap saling dukung dan sayang teman.", image: "/kebersamaan.jpg" },
 		"eid": { title: "Selamat Idul Fitri", subtitle: "smatech.in_k mengucapkan Mohon Maaf Lahir dan Batin.", image: "/kebersamaan.jpg" },
-		"2-20": { title: "Hari Keadilan Sosial Sedunia", subtitle: "Bergerak untuk keadilan.", image: "/kebersamaan.jpg" },
-		"3-8": { title: "Hari Perempuan Internasional", subtitle: "Setara, kuat, inspiratif.", image: "/kebersamaan.jpg" },
-		"3-21": { title: "Hari Hutan Sedunia", subtitle: "Lestarikan hutan untuk masa depan.", image: "/kebersamaan.jpg" },
-		"3-22": { title: "Hari Air Sedunia", subtitle: "Hemat dan jaga kualitas air.", image: "/kebersamaan.jpg" },
-		"3-27": { title: "Hari Teater Sedunia", subtitle: "Apresiasi seni pertunjukan.", image: "/kebersamaan.jpg" },
-		"4-2": { title: "Hari Peduli Autisme Sedunia", subtitle: "Dukung inklusivitas.", image: "/kebersamaan.jpg" },
-		"4-21": { title: "Hari Kartini", subtitle: "Habis gelap terbitlah terang.", image: "/kebersamaan.jpg" },
-		"4-22": { title: "Hari Bumi", subtitle: "Aksi kecil untuk bumi besar.", image: "/kebersamaan.jpg" },
-		"4-23": { title: "Hari Buku Sedunia", subtitle: "Membaca membuka dunia.", image: "/kebersamaan.jpg" },
-		"5-1": { title: "Hari Buruh Internasional", subtitle: "Kerja keras, karya terbaik.", image: "/kebersamaan.jpg" },
-		"5-2": { title: "Hari Pendidikan Nasional", subtitle: "Belajar sepanjang hayat.", image: "/kebersamaan.jpg" },
-		"5-20": { title: "Hari Kebangkitan Nasional", subtitle: "Bangkit dan bersatu.", image: "/kebersamaan.jpg" },
-		"6-1": { title: "Hari Lahir Pancasila", subtitle: "Bhinneka Tunggal Ika.", image: "/kebersamaan.jpg" },
-		"6-5": { title: "Hari Lingkungan Hidup Sedunia", subtitle: "Jaga alam, jaga hidup.", image: "/kebersamaan.jpg" },
-		"6-21": { title: "Hari Musik Sedunia", subtitle: "Musik menyatukan kita.", image: "/kebersamaan.jpg" },
-		"7-23": { title: "Hari Anak Nasional", subtitle: "Lindungi dan bahagiakan anak.", image: "/kebersamaan.jpg" },
-		"7-29": { title: "Hari Harimau Internasional", subtitle: "Lestarikan satwa liar.", image: "/kebersamaan.jpg" },
-		"8-17": { title: "Hari Kemerdekaan RI", subtitle: "Dirgahayu Indonesia!", image: "/kebersamaan.jpg" },
-		"8-19": { title: "Hari Fotografi Sedunia", subtitle: "Abadikan momen berharga.", image: "/kebersamaan.jpg" },
-		"9-9": { title: "Hari Olahraga Nasional", subtitle: "Sehat, bugar, berprestasi.", image: "/kebersamaan.jpg" },
-		"9-21": { title: "Hari Perdamaian Internasional", subtitle: "Sebarkan damai.", image: "/kebersamaan.jpg" },
-		"9-27": { title: "Hari Pariwisata Dunia", subtitle: "Jelajah dan lestarikan budaya.", image: "/kebersamaan.jpg" },
-		"10-1": { title: "Hari Kesaktian Pancasila", subtitle: "Kenang dan teladani.", image: "/kebersamaan.jpg" },
-		"10-5": { title: "Hari Guru Sedunia", subtitle: "Terima kasih para guru.", image: "/kebersamaan.jpg" },
-		"10-28": { title: "Hari Sumpah Pemuda", subtitle: "Bersatu untuk Indonesia.", image: "/kebersamaan.jpg" },
-		"11-10": { title: "Hari Pahlawan", subtitle: "Teladani semangat pahlawan.", image: "/kebersamaan.jpg" },
-		"11-12": { title: "Hari Kesehatan Nasional", subtitle: "Sehat untuk Indonesia.", image: "/kebersamaan.jpg" },
-		"11-25": { title: "Hari Guru Nasional", subtitle: "Mengajar, menginspirasi.", image: "/kebersamaan.jpg" },
-		"12-1": { title: "Hari AIDS Sedunia", subtitle: "Peduli dan cegah stigma.", image: "/kebersamaan.jpg" },
-		"12-10": { title: "Hari HAM Sedunia", subtitle: "Hormati hak asasi semua.", image: "/kebersamaan.jpg" },
-		"12-22": { title: "Hari Ibu", subtitle: "Terima kasih kasih sayang ibu.", image: "/kebersamaan.jpg" }
+		"2-20": { title: "Selamat Hari Keadilan Sosial Sedunia", subtitle: "Bergerak untuk keadilan.", image: "/kebersamaan.jpg" },
+		"3-8": { title: "Selamat Hari Perempuan Internasional", subtitle: "Setara, kuat, inspiratif.", image: "/kebersamaan.jpg" },
+		"3-21": { title: "Selamat Hari Hutan Sedunia", subtitle: "Lestarikan hutan untuk masa depan.", image: "/kebersamaan.jpg" },
+		"3-22": { title: "Selamat Hari Air Sedunia", subtitle: "Hemat dan jaga kualitas air.", image: "/kebersamaan.jpg" },
+		"3-27": { title: "Selamat Hari Teater Sedunia", subtitle: "Apresiasi seni pertunjukan.", image: "/kebersamaan.jpg" },
+		"4-2": { title: "Selamat Hari Peduli Autisme Sedunia", subtitle: "Dukung inklusivitas.", image: "/kebersamaan.jpg" },
+		"4-21": { title: "Selamat Hari Kartini", subtitle: "Habis gelap terbitlah terang.", image: "/kebersamaan.jpg" },
+		"4-22": { title: "Selamat Hari Bumi", subtitle: "Aksi kecil untuk bumi besar.", image: "/kebersamaan.jpg" },
+		"4-23": { title: "Selamat Hari Buku Sedunia", subtitle: "Membaca membuka dunia.", image: "/kebersamaan.jpg" },
+		"5-1": { title: "Selamat Hari Buruh Internasional", subtitle: "Kerja keras, karya terbaik.", image: "/kebersamaan.jpg" },
+		"5-2": { title: "Selamat Hari Pendidikan Nasional", subtitle: "Belajar sepanjang hayat.", image: "/kebersamaan.jpg" },
+		"5-20": { title: "Selamat Hari Kebangkitan Nasional", subtitle: "Bangkit dan bersatu.", image: "/kebersamaan.jpg" },
+		"6-1": { title: "Selamat Hari Lahir Pancasila", subtitle: "Bhinneka Tunggal Ika.", image: "/kebersamaan.jpg" },
+		"6-5": { title: "Selamat Hari Lingkungan Hidup Sedunia", subtitle: "Jaga alam, jaga hidup.", image: "/kebersamaan.jpg" },
+		"6-21": { title: "Selamat Hari Musik Sedunia", subtitle: "Musik menyatukan kita.", image: "/kebersamaan.jpg" },
+		"7-23": { title: "Selamat Hari Anak Nasional", subtitle: "Lindungi dan bahagiakan anak.", image: "/kebersamaan.jpg" },
+		"7-29": { title: "Selamat Hari Harimau Internasional", subtitle: "Lestarikan satwa liar.", image: "/kebersamaan.jpg" },
+		"8-17": { title: "Selamat Hari Kemerdekaan RI", subtitle: "Dirgahayu Indonesia!", image: "/kebersamaan.jpg" },
+		"8-19": { title: "Selamat Hari Fotografi Sedunia", subtitle: "Abadikan momen berharga.", image: "/kebersamaan.jpg" },
+		"9-9": { title: "Selamat Hari Olahraga Nasional", subtitle: "Sehat, bugar, berprestasi.", image: "/kebersamaan.jpg" },
+		"9-21": { title: "Selamat Hari Perdamaian Internasional", subtitle: "Sebarkan damai.", image: "/kebersamaan.jpg" },
+		"9-27": { title: "Selamat Hari Pariwisata Dunia", subtitle: "Jelajah dan lestarikan budaya.", image: "/kebersamaan.jpg" },
+		"10-1": { title: "Selamat Hari Kesaktian Pancasila", subtitle: "Kenang dan teladani.", image: "/kebersamaan.jpg" },
+		"10-5": { title: "Selamat Hari Guru Sedunia", subtitle: "Terima kasih para guru.", image: "/kebersamaan.jpg" },
+		"10-28": { title: "Selamat Hari Sumpah Pemuda", subtitle: "Bersatu untuk Indonesia.", image: "/kebersamaan.jpg" },
+		"11-10": { title: "Selamat Hari Pahlawan", subtitle: "Teladani semangat pahlawan.", image: "/kebersamaan.jpg" },
+		"11-12": { title: "Selamat Hari Kesehatan Nasional", subtitle: "Sehat untuk Indonesia.", image: "/kebersamaan.jpg" },
+		"11-25": { title: "Selamat Hari Guru Nasional", subtitle: "Mengajar, menginspirasi.", image: "/kebersamaan.jpg" },
+		"12-1": { title: "Selamat Hari AIDS Sedunia", subtitle: "Peduli dan cegah stigma.", image: "/kebersamaan.jpg" },
+		"12-10": { title: "Selamat Hari HAM Sedunia", subtitle: "Hormati hak asasi semua.", image: "/kebersamaan.jpg" },
+		"12-22": { title: "Selamat Hari Ibu", subtitle: "Terima kasih ibu, sayang ibu selamanya.", image: "/kebersamaan.jpg" }
 	}
 	const params = new URLSearchParams(window.location.search)
 	const override = params.get("special")
 	const key = `${d.getMonth() + 1}-${d.getDate()}`
+	const asset = (p) => {
+		const base = import.meta.env.BASE_URL || "/"
+		const s = String(p || "").replace(/^\//, "")
+		const enc = s.split("/").map((seg) => encodeURIComponent(seg)).join("/")
+		return `${base}${enc}`
+	}
 	const seasonal = specials[override || key] || {
 		title: "Selamat menjalankan ibadah puasa",
 		subtitle: "Semoga ibadah kita diterima, tetap semangat belajar.",
-		image: "/kebersamaan.jpg",
+		image: asset("kebersamaan.jpg"),
 	}
 	const year = d.getFullYear()
 	const ramadhanSchedule = {
@@ -248,20 +254,20 @@ const Home = () => {
 				<div
 					className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/15 bg-white/10 backdrop-blur-lg text-xs md:text-sm hover:bg-white/15 transition"
 				>
-					<span className="opacity-80">Welcome to</span>
-					<span className="font-semibold">smatech.in_k</span>
+					<span className="opacity-80"></span>
+					<span className="font-semibold">Informatics Engineering</span>
 				</div>
 				<h1 className="mt-4 text-3xl md:text-5xl lg:text-6xl font-extrabold glow-soft">
-					Smart Technology Information Karyawan
+					Smart Technology Informatics Karyawan
 				</h1>
 				<div className="opacity-80 mt-2 text-sm md:text-base">
-					UNIVERSITAS HASYIM ASY&apos;ARI — UNHASY Tebuireng Jombang.
+					Wroker Class — UNHASY Tebuireng Jombang.
 				</div>
 
 				<div className="mt-6">
 					<div className="hero-logo">
 						<img
-							src="/logoo.jpg"
+							src={asset("logoo.jpg")}
 							alt="Logo"
 							onError={(e) => { e.currentTarget.style.display = 'none' }}
 						/>
@@ -379,19 +385,75 @@ const Home = () => {
 					>
 						<div className="image-card">
 							<img
-								src="/rujakan-ziarah.jpg"
+								src={asset("kebersamaan.jpg")}
+								alt="Kebersamaan Kelas"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
+							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
+						</div>
+						<div className="image-card">
+							<img
+								src={asset("rujakan.jpg")}
 								alt="Rujakan Ziarah"
-								onError={(e) => { e.currentTarget.src = (seasonal.image || "/kebersamaan.jpg") }}
+								onError={(e) => { e.currentTarget.src = (seasonal.image || asset("kebersamaan.jpg")) }}
+							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
+						</div>
+						<div className="image-card">
+							<img
+								src={asset("ziarah.jpg")}
+								alt="Ziarah"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
+							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
+						</div>
+						<div className="image-card">
+							<img
+								src={asset("dosen1.jpg")}
+								alt="Ziarah"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
+							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
+						</div>
+						<div className="image-card">
+							<img
+								src={asset("dosen2.jpg")}
+								alt="Ziarah"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
 							/>
 							<div className="image-caption">Kebersamaan kelas — UNHASY Tebuireng Jombang</div>
 						</div>
 						<div className="image-card">
 							<img
-								src="/ziarah.jpg"
+								src={asset("dosen3.jpg")}
 								alt="Ziarah"
 								onError={(e) => { e.currentTarget.style.display = 'none' }}
 							/>
-							<div className="image-caption">Kebersamaan kelas — UNHASY Tebuireng Jombang</div>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
+						</div>
+						<div className="image-card">
+							<img
+								src={asset("dosen4.jpg")}
+								alt="Ziarah"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
+							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
+						</div>
+						<div className="image-card">
+							<img
+								src={asset("dosen5.jpg")}
+								alt="Ziarah"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
+							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
+						</div>
+						<div className="image-card">
+							<img
+								src={asset("dosen6.jpg")}
+								alt="Ziarah"
+								onError={(e) => { e.currentTarget.style.display = 'none' }}
+							/>
+							<div className="image-caption">Kebersamaan kelas — smatech.in_k</div>
 						</div>
 					</Slider>
 				</div>
