@@ -9,6 +9,7 @@ export const LOCAL_PHOTOS = [
   { url: "/22.jpg", name: "Foto 8" },
   { url: "/9.jpg", name: "Foto 9" },
   { url: "/10.jpg", name: "Foto 10" },
+  { url: "/13.jpg", name: "Foto 13" },
   { url: "/12.jpg", name: "Foto 12" },
   { url: "/14.jpg", name: "Foto 14" },
   { url: "/15.jpg", name: "Foto 15" },
