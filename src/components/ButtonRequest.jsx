@@ -41,9 +41,15 @@ export default function ButtonRequest() {
 	const fetchImagesFromFirebase = async () => {
 		try {
 			const storage = getStorage()
-			const storageRef = ref(storage, "images/")
+			let storageRef = ref(storage, "images_pending/")
 
-			const imagesList = await listAll(storageRef)
+			let imagesList
+			try {
+				imagesList = await listAll(storageRef)
+			} catch {
+				storageRef = ref(storage, "images/")
+				imagesList = await listAll(storageRef).catch(() => ({ items: [] }))
+			}
 
 			const imagePromises = imagesList.items.map(async (item) => {
 				const url = await getDownloadURL(item)
@@ -162,17 +168,7 @@ export default function ButtonRequest() {
 		}
 	}
 
-	const clearImageRequests = async () => {
-		try {
-			const storage = getStorage()
-			const imgList = await listAll(ref(storage, "images/")).catch(() => ({ items: [] }))
-			await Promise.all(imgList.items.map(async (item) => deleteObject(item).catch(() => {})))
-			setImages([])
-			window.dispatchEvent(new CustomEvent("gallery:refresh"))
-		} catch (e) {
-			console.warn("Hapus semua gambar request gagal:", e)
-		}
-	}
+	// tidak ada tombol hapus; daftar dikosongkan dengan membaca folder kosong
 
 	const rejectVideo = async (videoData) => {
 		try {
@@ -363,19 +359,7 @@ export default function ButtonRequest() {
 									{loginError && <div className="text-red-300 text-xs mt-1">{loginError}</div>}
 								</div>
 							)}
-							<div className="text-white text-sm font-semibold opacity-90 mt-4 mb-2 px-2 flex items-center justify-between">
-								<span>Gambar Request</span>
-								<button
-									type="button"
-									onClick={async () => {
-										if (!window.confirm("Hapus semua gambar request?")) return
-										await clearImageRequests()
-									}}
-									className="px-3 py-1 rounded-2xl bg-white/10 text-white text-xs hover:bg-white/20"
-								>
-									Hapus Semua
-								</button>
-							</div>
+							<div className="text-white text-sm font-semibold opacity-90 mt-4 mb-2 px-2">Gambar Request</div>
 							<div className="request-list max-h-[22rem] overflow-y-scroll overflow-y-scroll-no-thumb">
 								{images.length === 0 && (
 									<div className="empty-state">
