@@ -305,11 +305,7 @@ export default function ButtonRequest() {
 									<button onClick={logoutAdmin} className="px-3 py-1 rounded-2xl bg-white/15 text-white text-xs hover:bg-white/25">
 										Logout Admin
 									</button>
-								) : (
-									<button onClick={loginAdmin} className="px-3 py-1 rounded-2xl bg-white/20 text-white text-xs hover:bg-white/30 disabled:opacity-60" disabled={loadingLogin}>
-										{loadingLogin ? "Memproses..." : "Login Admin"}
-									</button>
-								)}
+								) : null}
 								{isAdmin && <span className="px-2 py-1 rounded-2xl bg-green-600/70 text-white text-xs">Admin aktif</span>}
 							</div>
 							{isAdmin && (
