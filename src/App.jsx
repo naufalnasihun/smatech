@@ -26,7 +26,7 @@ function TextAnonimWidget() {
 	const boxRef = useRef(null)
 	useEffect(() => {
 		if (db) {
-			const q = query(collection(db, "anon_msgs"), orderBy("createdAt", "asc"))
+			const q = query(collection(db, "anon_msgs_public"), orderBy("createdAt", "asc"))
 			const unsub = onSnapshot(q, (snap) => {
 				const list = snap.docs.map((d) => d.data()?.text).filter(Boolean)
 				setMessages(list)
@@ -56,7 +56,7 @@ function TextAnonimWidget() {
 		const v = (text || "").trim()
 		if (!v) return
 		if (db) {
-			addDoc(collection(db, "anon_msgs"), { text: v, createdAt: serverTimestamp() }).catch(() => {})
+			addDoc(collection(db, "anon_msgs_public"), { text: v, createdAt: serverTimestamp() }).catch(() => {})
 		} else {
 			setMessages((prev) => [...prev, v])
 		}
@@ -73,30 +73,9 @@ function TextAnonimWidget() {
 					className="rounded-2xl border border-white/15 bg-white/10 text-white overflow-hidden"
 					style={{ boxShadow: "0 10px 30px rgba(0,0,0,0.25)" }}
 				>
-					<div className="px-5 py-3 text-[1.05rem] font-semibold flex items-center justify-between gap-2 border-b border-white/10">
-						<div className="flex items-center gap-2">
-							<img src={asset("profil.svg")} alt="" style={{ width: 20, height: 20 }} />
-							<span>Text Anonim</span>
-						</div>
-						<button
-							type="button"
-							className="px-3 py-1 rounded-2xl bg-white/15 text-white text-xs hover:bg-white/25"
-							onClick={async () => {
-								if (!window.confirm("Hapus semua pesan anonim?")) return
-								try {
-									if (db) {
-										const { getDocs, collection, deleteDoc } = await import("firebase/firestore")
-										const snap = await getDocs(collection(db, "anon_msgs"))
-										await Promise.all(snap.docs.map((d) => deleteDoc(d.ref)))
-									} else {
-										localStorage.removeItem("anon_msgs")
-									}
-									setMessages([])
-								} catch (e) { console.warn("Reset gagal:", e) }
-							}}
-						>
-							Reset
-						</button>
+					<div className="px-5 py-3 text-center text-[1.05rem] font-semibold flex items-center justify-center gap-2 border-b border-white/10">
+						<img src={asset("profil.svg")} alt="" style={{ width: 20, height: 20 }} />
+						<span>Text Anonim</span>
 					</div>
 					<div
 						ref={boxRef}
