@@ -1,8 +1,6 @@
  
 import "slick-carousel/slick/slick.css"
 import "slick-carousel/slick/slick-theme.css"
-import ButtonSend from "../components/ButtonSend"
-import ButtonRequest from "../components/ButtonRequest"
 import PhotoGallery from "../components/gallery/PhotoGallery"
 import VideoGallery from "../components/gallery/VideoGallery"
  
@@ -28,10 +26,7 @@ const Carousel = () => {
 
 			
 
-			<div className="flex justify-center items-center gap-8 text-base mt-6 lg:mt-10">
-				<ButtonSend />
-				<ButtonRequest />
-			</div>
+			
 
 			
 			
