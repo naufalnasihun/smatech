@@ -21,10 +21,7 @@ export default function Rating() {
         return lastRating ? parseFloat(lastRating) : 5.0
     })
 
-    const [remainingRatings, setRemainingRatings] = React.useState(() => {
-        const remaining = localStorage.getItem("remainingRatings")
-        return remaining ? parseInt(remaining, 10) : 3
-    })
+    const [cooldown, setCooldown] = React.useState(false)
 
     const [isSubmitting, setIsSubmitting] = React.useState(false)
     const [videoVisible, setVideoVisible] = React.useState(true)
@@ -39,13 +36,13 @@ export default function Rating() {
     })
 
     const handleChange = (event, newValue) => {
-        if (typeof newValue === "number" && remainingRatings > 0) {
+        if (typeof newValue === "number") {
             setValue(newValue)
         }
     }
 
     const handleSliderChange = async (event, newValue) => {
-        if (typeof newValue === "number" && remainingRatings > 0 && !isSubmitting) {
+        if (typeof newValue === "number" && !isSubmitting && !cooldown) {
             setIsSubmitting(true)
             setValue(newValue)
 
@@ -57,11 +54,7 @@ export default function Rating() {
                     })
                 }
 
-                const newRemainingRatings = remainingRatings - 1
-                setRemainingRatings(newRemainingRatings)
-
                 localStorage.setItem("lastRating", newValue.toString())
-                localStorage.setItem("remainingRatings", newRemainingRatings.toString())
 
                 const prevSum = parseFloat(localStorage.getItem("rating_sum") || "0")
                 const prevCount = parseInt(localStorage.getItem("rating_count") || "0", 10)
@@ -75,6 +68,8 @@ export default function Rating() {
                 console.warn("Rating gagal disimpan:", e)
             } finally {
                 setIsSubmitting(false)
+                setCooldown(true)
+                setTimeout(() => setCooldown(false), 500)
             }
         }
     }
@@ -106,7 +101,7 @@ export default function Rating() {
                 valueLabelDisplay="off"
                 onChange={handleChange}
                 onChangeCommitted={handleSliderChange}
-                disabled={remainingRatings === 0 || isSubmitting}
+                disabled={isSubmitting || cooldown}
                 sx={{
                     "& .MuiSlider-thumb": {
                         height: "1.5rem",
