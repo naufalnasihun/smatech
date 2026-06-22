@@ -1,0 +1,38 @@
+export const LOCAL_PHOTOS = [
+  { url: "/1.jpg", name: "Foto 1" },
+  { url: "/2.jpg", name: "Foto 2" },
+  { url: "/3.jpg", name: "Foto 3" },
+  { url: "/4.jpg", name: "Foto 4" },
+  { url: "/5.jpg", name: "Foto 5" },
+  { url: "/6.jpg", name: "Foto 6" },
+  { url: "/7.jpg", name: "Foto 7" },
+  { url: "/22.jpg", name: "Foto 8" },
+  { url: "/9.jpg", name: "Foto 9" },
+  { url: "/10.jpg", name: "Foto 10" },
+  { url: "/13.jpg", name: "Foto 13" },
+  { url: "/12.jpg", name: "Foto 12" },
+  { url: "/14.jpg", name: "Foto 14" },
+  { url: "/15.jpg", name: "Foto 15" },
+  { url: "/23.jpg", name: "Foto 16" },
+  { url: "/17.jpg", name: "Foto 17" },
+  { url: "/18.jpg", name: "Foto 18" },
+  { url: "/19.jpg", name: "Foto 19" },
+  { url: "/20.jpg", name: "Foto 20" },
+  { url: "/21.jpg", name: "Foto 21" },
+  { url: "/24.jpg", name: "Foto 24" },
+  { url: "/26.jpg", name: "Foto 26" },
+  { url: "/27.jpg", name: "Foto 27" },
+  { url: "/28.jpg", name: "Foto 28" },
+  { url: "/29.jpg", name: "Foto 29" },
+  { url: "/30.jpg", name: "Foto 30" },
+]
+
+export const LOCAL_VIDEOS = [
+  { url: "/0113.mp4", name: "0113" },
+  { url: "/13.mp4", name: "13" },
+  { url: "/VID-20260112-WA0172.mp4", name: "Video 0172" },
+  { url: "/VID-20260112-WA0205.mp4", name: "Video 0205" },
+  { url: "/VID-20260112-WA0800.mp4", name: "Video 0800" },
+  { url: "/VID-20260112-WA0803.mp4", name: "Video 0803" },
+  { url: "/VID-20260112-WA0805.mp4", name: "Video 0805" }
+]

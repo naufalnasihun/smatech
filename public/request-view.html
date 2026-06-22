@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Request Viewer</title>
+  <meta name="theme-color" content="#0b1625" />
+  <style>
+    html, body { height: 100%; margin: 0; background: #0b1625; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; color: #fff }
+    .container { max-width: 920px; margin: 0 auto; padding: 20px }
+    .card { border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.08); border-radius: 16px; padding: 16px; backdrop-filter: blur(8px) }
+    .title { font-weight: 800; font-size: 1.4rem; margin-bottom: 10px }
+    .list { display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto }
+    .item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10) }
+    .meta { display: flex; align-items: center; gap: 10px }
+    .thumb { width: 46px; height: 46px; border-radius: 12px; object-fit: cover }
+    .name { font-weight: 600; font-size: 0.92rem }
+    .time { opacity: 0.8; font-size: 0.82rem }
+    .empty { border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.10); border-radius: 16px; padding: 16px; text-align: center }
+    .muted { opacity: .8; font-size: .92rem }
+    .note { margin-top: 12px; opacity: .75; font-size: .82rem }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="title">Request Viewer</div>
+      <div id="status" class="muted">Memuat daftar…</div>
+      <div id="imgList" class="list" aria-live="polite"></div>
+      <div id="empty" class="empty" style="display:none">
+        <div class="name">Belum ada gambar pada folder pending</div>
+        <div class="muted">Upload baru akan muncul di halaman ini.</div>
+      </div>
+      <div class="note">Halaman berdiri sendiri dan tidak terhubung ke tombol di aplikasi.</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getStorage, ref, listAll, getDownloadURL, getMetadata } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBmUIXJblRGF4HTCO3hOB8MykvLOq7whUE",
+      authDomain: "project-web-kelas.firebaseapp.com",
+      projectId: "project-web-kelas",
+      storageBucket: "project-web-kelas.appspot.com",
+      messagingSenderId: "202691312352",
+      appId: "1:202691312352:web:e82e7a494e705b2a12ee85"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
+
+    const statusEl = document.getElementById("status");
+    const listEl = document.getElementById("imgList");
+    const emptyEl = document.getElementById("empty");
+
+    async function loadImages() {
+      try {
+        statusEl.textContent = "Memuat daftar…";
+        let storageRef = ref(storage, "images_pending/");
+        let listResp;
+        try {
+          listResp = await listAll(storageRef);
+        } catch {
+          storageRef = ref(storage, "images/");
+          listResp = await listAll(storageRef);
+        }
+        const items = listResp.items || [];
+        if (!items.length) {
+          statusEl.textContent = "Kosong";
+          emptyEl.style.display = "";
+          return;
+        }
+        const entries = await Promise.all(items.map(async (item) => {
+          const [url, meta] = await Promise.all([getDownloadURL(item), getMetadata(item)]);
+          return { url, name: meta.name, timeCreated: meta.timeCreated };
+        }));
+        entries.sort((a, b) => new Date(a.timeCreated) - new Date(b.timeCreated));
+        listEl.innerHTML = "";
+        for (const e of entries) {
+          const row = document.createElement("div");
+          row.className = "item";
+          const left = document.createElement("div");
+          left.className = "meta";
+          const img = document.createElement("img");
+          img.className = "thumb";
+          img.src = e.url;
+          const textWrap = document.createElement("div");
+          const name = document.createElement("div");
+          name.className = "name";
+          name.textContent = e.name || "Gambar";
+          const time = document.createElement("div");
+          time.className = "time";
+          time.textContent = new Date(e.timeCreated).toLocaleString("id-ID");
+          textWrap.appendChild(name);
+          textWrap.appendChild(time);
+          left.appendChild(img);
+          left.appendChild(textWrap);
+          row.appendChild(left);
+          listEl.appendChild(row);
+        }
+        statusEl.textContent = "Selesai";
+      } catch (e) {
+        statusEl.textContent = "Gagal memuat daftar";
+        console.warn(e);
+      }
+    }
+
+    loadImages();
+  </script>
+</body>
+</html>

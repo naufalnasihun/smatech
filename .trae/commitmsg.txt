@@ -1,0 +1,2 @@
+Update aset BASE_URL untuk GitHub Pages dan perbaikan path gambar
+Siapkan workflow deploy Pages dan penyesuaian impor case-sensitive di Schedule
